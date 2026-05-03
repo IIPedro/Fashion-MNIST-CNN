@@ -12,7 +12,7 @@ The project supports both CPU and GPU (CUDA) execution, automatically detecting 
 
 - **`neural_network.py`** — Defines the `MNIST_CNN` class, which implements the neural network architecture. The model uses three Conv2d layers (16, 32, and 64 filters with kernel size 3), ReLU activation, MaxPool2d layers, a fully connected layer, dropout regularization (0.5), and a final linear layer producing 10 class logits.
 
-- **`training.py`** — Handles the full training pipeline. It downloads the Fashion-MNIST dataset (if not already present), creates data loaders with batch size 64, configures the optimizer (Adam, learning rate 1e-4), and runs the training loop for 10 epochs. Training and validation losses are logged to TensorBoard via `torch.utils.tensorboard`. The trained model weights are saved to `MNIST_CNN.pth`.
+- **`training.py`** — Handles the full training pipeline. It downloads the Fashion-MNIST dataset (if not already present), creates data loaders with batch size 64, configures the optimizer (Adam, learning rate 3e-4), and runs the training loop for 10 epochs. Training and validation losses are logged to TensorBoard via `torch.utils.tensorboard`. The trained model weights are saved to `MNIST_CNN.pth`.
 
 - **`inference.py`** — Loads the trained model from `MNIST_CNN.pth` and evaluates it on random test samples. It selects 9 random images from the test set, runs them through the model, and saves a 3x3 grid visualization (`predictions.png`) showing the ground truth labels alongside the model predictions, with correct predictions marked with a check mark and incorrect ones with a cross mark.
 
