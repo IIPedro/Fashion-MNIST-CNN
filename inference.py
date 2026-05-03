@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torchvision import datasets, transforms
 
-from neural_network import MNIST_CNN
+from neural_network import Fashion_MNIST_CNN
 
 # Check for NVidia GPU
 is_cuda = torch.cuda.is_available()
@@ -32,9 +32,9 @@ CLASS_NAMES = [
 ]
 
 # Load model from disk
-model = MNIST_CNN()
+model = Fashion_MNIST_CNN()
 _ = model.load_state_dict(
-    torch.load("MNIST_CNN.pth", map_location=device, weights_only=True)
+    torch.load("Fashion_MNIST_CNN.pth", map_location=device, weights_only=True)
 )
 model = model.to(device)
 model.eval()

@@ -40,6 +40,8 @@ pip install -r requirements.txt
 python training.py
 ```
 
+Alternatively, download a pretrained model [here](https://huggingface.co/IPedro/Fashion-MNIST-CNN/tree/main).
+
 **Run inference on the trained model:**
 
 ```

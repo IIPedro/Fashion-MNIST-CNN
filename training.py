@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 
-from neural_network import MNIST_CNN
+from neural_network import Fashion_MNIST_CNN
 
 # Check for NVidia GPU
 is_cuda = torch.cuda.is_available()
@@ -26,11 +26,11 @@ train_dataloader = DataLoader(training_data, batch_size=64)
 test_dataloader = DataLoader(test_data, batch_size=64)
 
 # Load model
-model = MNIST_CNN()
+model = Fashion_MNIST_CNN()
 model.to(device)
 
-# Training hyperparameters
-learning_rate = 1e-4
+# Training hyperparameters (for 50 epochs, use LR 3e-5) (for 10 epochs, use LR 3e-4)
+learning_rate = 3e-4
 batch_size = 64
 
 
@@ -99,7 +99,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 # Tensorboard
 from torch.utils.tensorboard import SummaryWriter
 
-writer = SummaryWriter("runs/MNIST_CNN")
+writer = SummaryWriter("runs/Fashion_MNIST_CNN")
 
 # Enter training loop
 epochs = 10
@@ -113,4 +113,4 @@ print("Done!")
 writer.close()
 
 # Save model
-torch.save(model.state_dict(), "MNIST_CNN.pth")
+torch.save(model.state_dict(), "Fashion_MNIST_CNN.pth")

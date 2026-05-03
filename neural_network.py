@@ -1,7 +1,7 @@
 from torch import nn
 
 
-class MNIST_CNN(nn.Module):
+class Fashion_MNIST_CNN(nn.Module):
     def __init__(self):
         super().__init__()
         self.flatten = nn.Flatten()
