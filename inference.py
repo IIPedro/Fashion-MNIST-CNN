@@ -1,10 +1,7 @@
-import os
-
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
-from torch import nn
-from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor
+from torchvision import datasets, transforms
 
 from neural_network import MNIST_CNN
 
@@ -12,52 +9,70 @@ from neural_network import MNIST_CNN
 is_cuda = torch.cuda.is_available()
 print(f"GPU available: {is_cuda}")
 device = torch.device("cuda" if is_cuda else "cpu")
+print(f"Using device: {device}")
 
 # Get test data
+transform = transforms.Compose([transforms.ToTensor()])
 test_data = datasets.FashionMNIST(
-    root="data", train=False, download=True, transform=ToTensor()
+    root="data", train=False, download=True, transform=transform
 )
 
-test_dataloader = DataLoader(test_data, batch_size=64)
+# Fashion-MNIST class labels
+CLASS_NAMES = [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
+]
 
 # Load model from disk
 model = MNIST_CNN()
-model.to(device)
-
-if os.path.exists("MNIST_CNN.pth"):
-    model.load_state_dict(torch.load("MNIST_CNN.pth", map_location=device))
-    print("Model loaded!")
-
-
-def test_loop(dataloader, model, loss_fn):
-    # Test model
-    model.eval()
-    size = len(dataloader.dataset)
-    num_batches = len(dataloader)
-    test_loss, correct = 0, 0
-
-    # Do not compute gradients
-    with torch.no_grad():
-        for x, y in dataloader:
-            x = x.to(device)
-            y = y.to(device)
-            pred = model(x)
-            test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-
-    test_loss /= num_batches
-    correct /= size
-    print(
-        f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n"
-    )
+_ = model.load_state_dict(
+    torch.load("MNIST_CNN.pth", map_location=device, weights_only=True)
+)
+model = model.to(device)
+model.eval()
+print("Model loaded!")
 
 
-# Loss function
-loss_fn = nn.CrossEntropyLoss()
+# Helper: denormalise an image back to [0,1]
+def im_convert(tensor: torch.Tensor) -> np.ndarray:
+    """Convert a torch tensor (C,H,W) to numpy array (H,W,C) in [0,1]."""
+    image = tensor.cpu().numpy().squeeze()
+    return np.clip(image, 0, 1)
 
-# Enter testing loop
-epochs = 1
-for t in range(epochs):
-    print(f"Epoch {t + 1}\n-------------------------------")
-    test_loop(test_dataloader, model, loss_fn)
-print("Done!")
+
+# Pick 9 random samples and plot a 3×3 grid
+indices = np.random.choice(len(test_data), 9, replace=False).tolist()
+images, labels = torch.utils.data.dataloader.default_collate(
+    [test_data[i] for i in indices]
+)
+images = images.to(device)
+labels = labels.to(device)
+
+# Make predictions
+with torch.no_grad():
+    logits = model(images)
+    preds = logits.argmax(dim=1)
+
+# Plot 3×3 grid
+fig, axes = plt.subplots(3, 3, figsize=(8, 8))
+for i, ax in enumerate(fig.axes):
+    if i < 9:
+        ax.imshow(im_convert(images[i]), cmap="gray")
+        exp_name = CLASS_NAMES[labels[i].item()]
+        pred_name = CLASS_NAMES[preds[i].item()]
+        correct = "✓" if labels[i].item() == preds[i].item() else "✗"
+        ax.set_title(f"Exp: {exp_name}\nPred: {pred_name} {correct}")
+        ax.axis("off")
+
+plt.tight_layout()
+plt.savefig("predictions.png", dpi=150)
+plt.show()
+print("Predictions saved to predictions.png")

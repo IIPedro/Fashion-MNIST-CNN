@@ -10,6 +10,7 @@ from neural_network import MNIST_CNN
 is_cuda = torch.cuda.is_available()
 print(f"GPU available: {is_cuda}")
 device = torch.device("cuda" if is_cuda else "cpu")
+print(f"Using device: {device}")
 
 # Get training data
 training_data = datasets.FashionMNIST(
