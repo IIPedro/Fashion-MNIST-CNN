@@ -46,7 +46,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
 
 
 loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 from torch.utils.tensorboard import SummaryWriter
 
