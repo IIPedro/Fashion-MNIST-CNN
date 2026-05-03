@@ -8,16 +8,19 @@ from torchvision.transforms import ToTensor
 
 from neural_network import MNIST_CNN
 
+# Check for NVidia GPU
 is_cuda = torch.cuda.is_available()
 print(f"GPU available: {is_cuda}")
 device = torch.device("cuda" if is_cuda else "cpu")
 
+# Get test data
 test_data = datasets.FashionMNIST(
     root="data", train=False, download=True, transform=ToTensor()
 )
 
 test_dataloader = DataLoader(test_data, batch_size=64)
 
+# Load model from disk
 model = MNIST_CNN()
 model.to(device)
 
@@ -27,15 +30,13 @@ if os.path.exists("MNIST_CNN.pth"):
 
 
 def test_loop(dataloader, model, loss_fn):
-    # Set the model to evaluation mode - important for batch normalization and dropout layers
-    # Unnecessary in this situation but added for best practices
+    # Test model
     model.eval()
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     test_loss, correct = 0, 0
 
-    # Evaluating the model with torch.no_grad() ensures that no gradients are computed during test mode
-    # also serves to reduce unnecessary gradient computations and memory usage for tensors with requires_grad=True
+    # Do not compute gradients
     with torch.no_grad():
         for x, y in dataloader:
             x = x.to(device)
@@ -51,8 +52,10 @@ def test_loop(dataloader, model, loss_fn):
     )
 
 
+# Loss function
 loss_fn = nn.CrossEntropyLoss()
 
+# Enter testing loop
 epochs = 1
 for t in range(epochs):
     print(f"Epoch {t + 1}\n-------------------------------")
