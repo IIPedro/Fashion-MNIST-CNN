@@ -29,8 +29,8 @@ test_dataloader = DataLoader(test_data, batch_size=64)
 model = Fashion_MNIST_CNN()
 model.to(device)
 
-# Training hyperparameters (for 50 epochs, use LR 3e-5) (for 10 epochs, use LR 3e-4)
-learning_rate = 3e-4
+# Training hyperparameters
+learning_rate = 3e-5
 batch_size = 64
 
 
