@@ -4,8 +4,7 @@ from torch import nn
 class Fashion_MNIST_CNN(nn.Module):
     def __init__(self):
         super().__init__()
-        self.flatten = nn.Flatten()
-        self.mnist_cnn = nn.Sequential(
+        self.fashion_mnist_cnn = nn.Sequential(
             # 28 x 28 x 16
             nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm2d(16),
@@ -32,5 +31,5 @@ class Fashion_MNIST_CNN(nn.Module):
         )
 
     def forward(self, x):
-        logits = self.mnist_cnn(x)
+        logits = self.fashion_mnist_cnn(x)
         return logits
